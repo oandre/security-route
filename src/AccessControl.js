@@ -1,0 +1,58 @@
+var SessionManager = require('../business/SessionManager');
+
+module.exports = function(roleManager, sessionValidationService, userManager) {
+
+  var isDefautRolelAllowed = function(roleList){
+    if(roleList.indexOf(roleManager.getDefaultRole()) === -1) {
+      return false;
+    }
+
+    return true;
+  }
+
+  return {
+    isAllowedRoute: function(req, res, next, params){
+      
+      if (isDefautRolelAllowed(params.role)) {
+        return next();
+      }
+
+      if (!isDefautRolelAllowed(params.role) && !req.headers.authorization) {
+        var errorMessage = {
+          type: "MISSING_PARAMETER_ERROR",
+          message: "Missing access token"
+        };
+        res.status(403).json(errorMessage);
+        return res.end();
+      } else {
+
+        var session = new SessionManager(sessionValidationService, userManager);
+
+        session.validateSessionToken(req.headers.authorization, function(sessionError, userData){
+          if (sessionError) {
+            var errorMessage = {
+              type: "NOT_ALLOWED_ROUTE",
+              message: "You don't have access to this route"
+            };
+            res.status(403).json(errorMessage);
+            return res.end();
+          } else {
+            if (params.role.indexOf(userData.role) === -1) {
+              var errorMessage = {
+                type: "NOT_ALLOWED_ROUTE",
+                message: "You don't have access to this route"
+              };
+              res.status(403).json(errorMessage);
+              return res.end();
+            } else {
+              return next();
+            }
+          }
+        });
+
+      }
+
+    }
+  }
+
+}

@@ -1,0 +1,28 @@
+{
+  "name": "security-route",
+  "version": "1.1.0",
+  "description": "Micro module to protect routes based in a specific access role",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oandre/security-route.git"
+  },
+  "keywords": [
+    "acl",
+    "security",
+    "route"
+  ],
+  "dependencies": {
+    "express": "^4.16.2",
+    "jsonwebtoken": "^7.0.0"
+  },
+  "author": "André Simões <sou@oand.re>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oandre/security-route/issues"
+  },
+  "homepage": "https://github.com/oandre/security-route#readme"
+}
