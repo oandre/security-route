@@ -1,4 +1,4 @@
-module.exports = function(sessionValidationService, userManager) {
+module.exports = function(sessionValidationService) {
 
   'use strict';
 
@@ -6,41 +6,30 @@ module.exports = function(sessionValidationService, userManager) {
 
     validateSessionToken: function(accessToken, callback) {
 
-        sessionValidationService.authenticate(accessToken, function(error, response){
-
-            if (error) {
-                var errorMessage = {
-                  type: "INVALID_SESSION",
-                  message: "Informed session is invalid"
-                };
-                return callback(errorMessage, false);
-            } else {
-
-                if (response.type == "INVALID_SESSION") {
+        return new Promise(
+            function(resolve, reject) {
+                if (typeof sessionValidationService.authenticate == 'function') {
                     var errorMessage = {
-                        type: "INVALID_SESSION",
-                        message: "Informed session is invalid"
+                        type: "MISSING_METHOD",
+                        message: "Session Validation Service must have an 'authenticate' method"
                     };
-                    return callback(errorMessage, false);
+                    reject(errorMessage);
                 } else {
-
-                    userManager.findUserByToken(response.data.user_token, function(err, user){
-                    if (user === null) {
-                        var errorMessage = {
-                        type: "INVALID_SESSION",
-                        message: "Informed session is invalid"
-                        };
-                        return callback(errorMessage, false);
-                    } else {
-                        return callback(false, user);
-                    }
+                    sessionValidationService.authenticate(accessToken, function(error, response){
+                        
+                        if (error || response.type == "INVALID_SESSION") {
+                            var errorMessage = {
+                                type: "INVALID_SESSION",
+                                message: "Informed session is invalid"
+                            };
+                            reject(errorMessage);
+                        } else {
+                            resolve(response);
+                        }
                     });
-                    
                 }
-
             }
-
-        });
+        );
     }
 
   }

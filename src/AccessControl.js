@@ -1,6 +1,6 @@
 var SessionManager = require('../business/SessionManager');
 
-module.exports = function(roleManager, sessionValidationService, userManager) {
+module.exports = function(roleManager, sessionValidationService) {
 
   var isDefautRolelAllowed = function(roleList){
     if(roleList.indexOf(roleManager.getDefaultRole()) === -1) {
@@ -26,10 +26,12 @@ module.exports = function(roleManager, sessionValidationService, userManager) {
         return res.end();
       } else {
 
-        var session = new SessionManager(sessionValidationService, userManager);
+        var session = new SessionManager(sessionValidationService);
 
-        session.validateSessionToken(req.headers.authorization, function(sessionError, userData){
-          if (sessionError) {
+        session.validateSessionToken(req.headers.authorization)
+        .then(function(userData){
+
+          if (params.role.indexOf(userData.role) === -1) {
             var errorMessage = {
               type: "NOT_ALLOWED_ROUTE",
               message: "You don't have access to this route"
@@ -37,17 +39,17 @@ module.exports = function(roleManager, sessionValidationService, userManager) {
             res.status(403).json(errorMessage);
             return res.end();
           } else {
-            if (params.role.indexOf(userData.role) === -1) {
-              var errorMessage = {
-                type: "NOT_ALLOWED_ROUTE",
-                message: "You don't have access to this route"
-              };
-              res.status(403).json(errorMessage);
-              return res.end();
-            } else {
-              return next();
-            }
+            return next();
           }
+
+        })
+        .catch(function(sessionError){
+          var errorMessage = {
+            type: "NOT_ALLOWED_ROUTE",
+            message: "You don't have access to this route"
+          };
+          res.status(403).json(errorMessage);
+          return res.end();
         });
 
       }
