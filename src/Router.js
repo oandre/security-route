@@ -1,7 +1,7 @@
 var AccessControl = require('./AccessControl');
 var RoleManager = require('./RoleManager');
 
-module.exports = function(app, roleList, sessionValidationService){
+module.exports = function(router, roleList, sessionValidationService){
 
     var roleManager = new RoleManager(roleList);
 
@@ -11,7 +11,7 @@ module.exports = function(app, roleList, sessionValidationService){
 
             if (params.extra) {
 
-                return app[params.verb](params.path, params.extra, [
+                return router[params.verb](params.path, params.extra, [
                 function(req, res, next) {
                     var accessControl = new AccessControl(roleManager, sessionValidationService);
                     accessControl.isAllowedRoute(req, res, next, params);
@@ -21,7 +21,7 @@ module.exports = function(app, roleList, sessionValidationService){
 
             } else {
 
-                return app[params.verb](params.path, [
+                return router[params.verb](params.path, [
                 function(req, res, next) {
                     var accessControl = new AccessControl(roleManager, sessionValidationService);
                     accessControl.isAllowedRoute(req, res, next, params);
@@ -31,6 +31,10 @@ module.exports = function(app, roleList, sessionValidationService){
 
             }
 
+        },
+        
+        getRouter: function() {
+            return router;
         }
 
     }

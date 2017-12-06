@@ -1,7 +1,7 @@
 module.exports = function(roleList) {
 
     const roles = {
-        default_role: roleList.defaultRole,
+        default_role: roleList.default_role,
         roles: roleList.roles
     };
 

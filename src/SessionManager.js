@@ -8,7 +8,7 @@ module.exports = function(sessionValidationService) {
 
         return new Promise(
             function(resolve, reject) {
-                if (typeof sessionValidationService.authenticate == 'function') {
+                if (typeof sessionValidationService.authenticate != 'function') {
                     var errorMessage = {
                         type: "MISSING_METHOD",
                         message: "Session Validation Service must have an 'authenticate' method"

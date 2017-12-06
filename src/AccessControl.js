@@ -44,11 +44,7 @@ module.exports = function(roleManager, sessionValidationService) {
 
         })
         .catch(function(sessionError){
-          var errorMessage = {
-            type: "NOT_ALLOWED_ROUTE",
-            message: "You don't have access to this route"
-          };
-          res.status(403).json(errorMessage);
+          res.status(403).json(sessionError);
           return res.end();
         });
 
