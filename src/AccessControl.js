@@ -1,4 +1,4 @@
-var SessionManager = require('../business/SessionManager');
+var SessionManager = require('./SessionManager');
 
 module.exports = function(roleManager, sessionValidationService) {
 

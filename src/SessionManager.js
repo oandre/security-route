@@ -15,17 +15,16 @@ module.exports = function(sessionValidationService) {
                     };
                     reject(errorMessage);
                 } else {
-                    sessionValidationService.authenticate(accessToken, function(error, response){
-                        
-                        if (error || response.type == "INVALID_SESSION") {
-                            var errorMessage = {
-                                type: "INVALID_SESSION",
-                                message: "Informed session is invalid"
-                            };
-                            reject(errorMessage);
-                        } else {
-                            resolve(response);
-                        }
+                    sessionValidationService.authenticate(accessToken)
+                    .then(function(response){
+                        resolve(response);
+                    })
+                    .catch(function(error){
+                        var errorMessage = {
+                            type: "INVALID_SESSION",
+                            message: "Informed session is invalid"
+                        };
+                        reject(errorMessage);
                     });
                 }
             }

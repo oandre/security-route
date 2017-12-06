@@ -18,10 +18,9 @@ module.exports = function(){
     * app -> Express App
     * roleList -> array
     * sessionValidationService -> object
-    * userManager -> object
     */
 
-    Router = Router(app, roleList, sessionValidationService, userManager);
+    Router = Router(app, roleList, sessionValidationService);
 
     Router.addRoute({
         verb: 'get',
