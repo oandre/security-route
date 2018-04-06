@@ -22,7 +22,8 @@ module.exports = function(sessionValidationService) {
                     .catch(function(error){
                         var errorMessage = {
                             type: "INVALID_SESSION",
-                            message: "Informed session is invalid"
+                            message: "Informed session is invalid",
+                            stack_trace: error.toString()
                         };
                         reject(errorMessage);
                     });
